@@ -61,7 +61,12 @@ No HA, em *Histórico*, ver os últimos 7 dias de `media_player.meobox_4k_diw377
 
 Na mesma vista, ver se o `ping_box_meo` cai todas as noites. Se cair, a box pode também estar a contaminar as sentinelas "Infra" da deteção de falha de energia **[I]**.
 
-(O Claude Code no PC de casa consegue tirar isto pela REST, com o `HA_TOKEN`.)
+Quem pode fazer isto:
+
+- O Claude Code no PC de casa, pela REST, com o `HA_TOKEN`.
+- Tu, exportando o CSV no Histórico do HA (botão de descarregar) e pondo-o na pasta do vault, para o Claude o ler pelo Drive.
+
+O MCP não serve para isto: só dá o estado atual, não o histórico.
 
 ### Passo 2: a box deixa de desaparecer da rede
 
@@ -87,7 +92,7 @@ Desde o HA 2026.8, o WOL implícito da integração Samsung está obsoleto **[V]
 | **Ver TV** | 1. `media_player.turn_on` em `meobox_4k_diw377`: a box arranca e acorda a TV por CEC. 2. `media_player.turn_on` em `samsung_hub`: segurança, por WOL. 3. Esperar até `samsung_hub` ficar `on` (máx. 30 s). 4. `media_player.select_source` HDMI em `samsung_hub`. 5. Ler o estado de volta e notificar se a box não ficou `on` |
 | **Desligar TV** | `media_player.turn_off` em `samsung_hub`. A box desliga-se por CEC; se não desligar, `media_player.turn_off` em `meobox_4k_diw377` |
 
-Antes de criar, ver o que faz o `script.meo_power`. Se já fizer parte disto, aproveita-se.
+O `script.meo_power` foi uma tentativa que nunca funcionou bem (confirmado pelo Pedro a 14-10-2026). O "Ver TV" substitui-o. Só se apaga depois de confirmares e de verificar em *Relacionados* que nada o chama.
 
 ### Passo 5: exposição à Assist e ao MCP (reversível, não apaga nada)
 
@@ -118,6 +123,11 @@ Encurtar a gama DHCP do router para .100 a .179, para tirar de lá os IPs fixos 
 **Antes de mudar, verificar** que nenhum aparelho com IP dado por DHCP entre .180 e .200 é usado pelo HA através do IP. Os pings das sentinelas do Candeeiro Entrada, do Candeeiro Sala e do repetidor Xiaomi são os primeiros a confirmar.
 
 ---
+
+### Fora de âmbito: TV da Suite e a futura Samsung de 43"
+
+- **A TV da Suite já não existe** (Pedro, 14-10-2026). As entidades dela ficam como candidatas a limpeza, com a mesma regra de verificar *Relacionados* antes de apagar: `tizen_os_tv_40fct6000s`, `tv_suite`, `tizen_os_tv_dcec_*`, a automação "Wake-On-LAN - TV Suite", as do sleep timer, `input_select.desligar_tv_suite` e `timer.tv_suite_sleep`.
+- **Quando chegar a Samsung de 43":** integrar só pela Samsung Smart TV local, com a automação de WOL explícita desde o primeiro dia e IP fixo fora da gama DHCP. Carregar em **Ignorar** na descoberta DLNA. A SmartThings só se for preciso medir energia.
 
 ## 3. Ordem e testes
 
